@@ -4,7 +4,9 @@ import './index.scss';
 
 function Cell(props) {
   return (
-    <div className={`cell ${props.value ? "cell--alive" : "cell-dead"}`}>
+    <div
+      className={`cell ${props.value ? "cell--alive" : "cell-dead"}`}
+      onClick={props.onClick}>
     </div>
   )
 };
@@ -15,6 +17,8 @@ class Board extends React.Component {
     return (
       <Cell
         value={this.props.cells[x][y]}
+        onClick={() => this.props.onClick(x, y)}
+        key={y}
       />
     );
   }
@@ -22,7 +26,7 @@ class Board extends React.Component {
   render() {
     return (
       this.props.cells.map((row, rowIndex) =>
-        <div className="board-row">
+        <div className="board-row" key={rowIndex}>
           {row.map((cell, cellIndex) => this.renderCell(rowIndex, cellIndex))}
         </div>
       )
@@ -34,9 +38,11 @@ class Game extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      cells: Array(10)
+      cells:  Array(10)
               .fill()
-              .map(e => Array(10).fill().map((e, i) => false)),
+              .map(e => Array(10)
+                        .fill()
+                        .map((e) => false)),
       paused: true,
       generations: 0,
       intervalRef: null
@@ -62,12 +68,23 @@ class Game extends React.Component {
     })
   }
 
+  handleClick(x, y) {
+    if (!this.state.paused) { return; }
+    
+    let newCellState = JSON.parse(JSON.stringify(this.state.cells))
+    newCellState[x][y] = !newCellState[x][y];
+    this.setState({
+      cells: newCellState
+    })
+  }
+
   render() {
     return (
       <div className="game">
         <div className="game__board">
           <Board
             cells={this.state.cells}
+            onClick={(x, y) => this.handleClick(x, y)}
           />
         </div>
         <div className="game__info">
