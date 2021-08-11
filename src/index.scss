@@ -1,0 +1,11 @@
+.board-row {
+  display: flex;
+}
+.cell {
+  border: 1px solid black;
+  height: 3rem;
+  width: 3rem;
+  &--alive {
+    background-color: black;
+  }
+}
