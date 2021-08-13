@@ -130,6 +130,17 @@ class Game extends React.Component {
     });
   }
 
+  clearBoard() {
+    const emptyBoard = Array(10)
+                        .fill()
+                        .map(e => Array(10)
+                                  .fill()
+                                  .map((e) => false));
+    this.setState({
+      cells: emptyBoard
+    });
+  }
+
   render() {
     return (
       <div className="game">
@@ -141,6 +152,7 @@ class Game extends React.Component {
         </div>
         <div className="game__info">
           <button onClick={() => this.toggleStartStop()}>{this.state.paused ? "Start" : "Stop"}</button>
+          <button onClick={() => this.clearBoard()}>Clear</button>
           <div>{this.state.generations}</div>
         </div>
       </div>
