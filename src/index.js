@@ -46,7 +46,7 @@ class Game extends React.Component {
       paused: true,
       generations: 0,
       intervalRef: null
-    }
+    };
   }
 
   toggleStartStop() {
@@ -59,23 +59,75 @@ class Game extends React.Component {
       } else {
         this.setState({intervalRef: setInterval(this.tick, 1000)})
       }
-    })
+    });
   }
 
   tick = () => {
     this.setState({
+      cells: this.getNewCellState(),
       generations: this.state.generations + 1
-    })
+    });
+  }
+
+  getNewCellState() {
+    let result = JSON.parse(JSON.stringify(this.state.cells));
+
+    for (let row = 0; row < this.state.cells.length; row++) {
+      for (let cell = 0; cell < this.state.cells[row].length; cell++) {
+        let numLiveNeighbors = this.countLiveNeighbors(row, cell);
+
+        if (this.state.cells[row][cell]) {
+          if (numLiveNeighbors <= 1 || numLiveNeighbors >= 4) { result[row][cell] = false; } //death
+        } else {
+          if (numLiveNeighbors === 3) { result[row][cell] = true; } //birth
+        }
+      }
+    }
+
+    return result;
+  }
+
+  countLiveNeighbors(row, cell) {
+    let result = 0;
+    let neighborCoordinates = [
+      [-1, -1],
+      [-1, 0],
+      [-1, 1],
+      [0, -1],
+      [0, 1],
+      [1, -1],
+      [1, 0],
+      [1, 1]
+    ];
+
+    for (let i = 0; i < neighborCoordinates.length; i++) {
+      let neighborRowCoordinate = row + neighborCoordinates[i][0];
+      let neighborCellCoordinate = cell + neighborCoordinates[i][1];
+
+      if (neighborRowCoordinate < 0 || neighborCellCoordinate < 0) {
+        continue;
+      }
+      if (neighborRowCoordinate > 9 || neighborCellCoordinate > 9) {
+        continue;
+      }
+
+      if (this.state.cells[neighborRowCoordinate][neighborCellCoordinate]) {
+        result++;
+      }
+      if (result >= 4) { break; }
+    }
+
+    return result;
   }
 
   handleClick(x, y) {
     if (!this.state.paused) { return; }
-    
-    let newCellState = JSON.parse(JSON.stringify(this.state.cells))
+
+    let newCellState = JSON.parse(JSON.stringify(this.state.cells));
     newCellState[x][y] = !newCellState[x][y];
     this.setState({
       cells: newCellState
-    })
+    });
   }
 
   render() {
