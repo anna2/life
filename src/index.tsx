@@ -1,8 +1,8 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import './index.scss';
 
-function Cell(props) {
+function Cell(props: any) {
   return (
     <div
       className={`cell ${props.value ? "cell--alive" : "cell-dead"}`}
@@ -11,9 +11,14 @@ function Cell(props) {
   )
 };
 
-class Board extends React.Component {
+interface BoardProps {
+  cells: Array<boolean[]>,
+  onClick: Function
+}
 
-  renderCell(x, y) {
+class Board extends React.Component<BoardProps, {}> {
+
+  renderCell(x: number, y: number) {
     return (
       <Cell
         value={this.props.cells[x][y]}
@@ -34,18 +39,25 @@ class Board extends React.Component {
   }
 }
 
-class Game extends React.Component {
-  constructor(props) {
+interface GameState {
+  cells: Array<boolean[]>,
+  paused: boolean,
+  generations: number,
+  intervalRef: number | undefined
+}
+
+class Game extends React.Component<{}, GameState> {
+  constructor(props: any) {
     super(props);
     this.state = {
       cells:  Array(100)
-              .fill()
+              .fill(null)
               .map(e => Array(100)
-                        .fill()
+                        .fill(null)
                         .map((e) => false)),
       paused: true,
       generations: 0,
-      intervalRef: null
+      intervalRef: undefined
     };
   }
 
@@ -57,7 +69,7 @@ class Game extends React.Component {
       if (this.state.paused) {
         clearInterval(this.state.intervalRef)
       } else {
-        this.setState({intervalRef: setInterval(this.tick, 300)})
+        this.setState({intervalRef: window.setInterval(this.tick, 300)})
       }
     });
   }
@@ -87,7 +99,7 @@ class Game extends React.Component {
     return result;
   }
 
-  countLiveNeighbors(row, cell) {
+  countLiveNeighbors(row: number, cell: number) {
     let result = 0;
     let neighborCoordinates = [
       [-1, -1],
@@ -120,7 +132,7 @@ class Game extends React.Component {
     return result;
   }
 
-  handleClick(x, y) {
+  handleClick(x: number, y: number): void {
     if (!this.state.paused) { return; }
 
     let newCellState = JSON.parse(JSON.stringify(this.state.cells));
@@ -130,14 +142,15 @@ class Game extends React.Component {
     });
   }
 
-  clearBoard() {
+  clearBoard(): void {
     const emptyBoard = Array(100)
-                        .fill()
+                        .fill(null)
                         .map(e => Array(100)
-                                  .fill()
+                                  .fill(null)
                                   .map((e) => false));
     this.setState({
-      cells: emptyBoard
+      cells: emptyBoard,
+      generations: 0
     });
   }
 
@@ -152,7 +165,7 @@ class Game extends React.Component {
         <div className="game__board">
           <Board
             cells={this.state.cells}
-            onClick={(x, y) => this.handleClick(x, y)}
+            onClick={(x: number, y: number) => this.handleClick(x, y)}
           />
         </div>
         <div className="game__info">
