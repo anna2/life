@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import Button from '@material-ui/core/Button';
 
 import { Board } from './Board';
 import './index.scss';
@@ -133,8 +134,8 @@ class Game extends React.Component<{}, GameState> {
           />
         </div>
         <div className="game__info">
-          <button onClick={() => this.toggleStartStop()}>{this.state.paused ? "Start" : "Stop"}</button>
-          <button onClick={() => this.clearBoard()}>Clear</button>
+          <Button variant="contained" color="primary" onClick={() => this.toggleStartStop()}>{this.state.paused ? "Start" : "Stop"}</Button>
+          <Button variant="contained" color="primary" onClick={() => this.clearBoard()}>Clear</Button>
           <div>{this.state.generations}</div>
         </div>
       </div>
