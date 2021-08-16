@@ -38,9 +38,9 @@ class Game extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      cells:  Array(10)
+      cells:  Array(100)
               .fill()
-              .map(e => Array(10)
+              .map(e => Array(100)
                         .fill()
                         .map((e) => false)),
       paused: true,
@@ -57,7 +57,7 @@ class Game extends React.Component {
       if (this.state.paused) {
         clearInterval(this.state.intervalRef)
       } else {
-        this.setState({intervalRef: setInterval(this.tick, 1000)})
+        this.setState({intervalRef: setInterval(this.tick, 300)})
       }
     });
   }
@@ -107,7 +107,7 @@ class Game extends React.Component {
       if (neighborRowCoordinate < 0 || neighborCellCoordinate < 0) {
         continue;
       }
-      if (neighborRowCoordinate > 9 || neighborCellCoordinate > 9) {
+      if (neighborRowCoordinate > 99 || neighborCellCoordinate > 99) {
         continue;
       }
 
@@ -131,14 +131,19 @@ class Game extends React.Component {
   }
 
   clearBoard() {
-    const emptyBoard = Array(10)
+    const emptyBoard = Array(100)
                         .fill()
-                        .map(e => Array(10)
+                        .map(e => Array(100)
                                   .fill()
                                   .map((e) => false));
     this.setState({
       cells: emptyBoard
     });
+  }
+
+  componentDidMount() {
+    let board = document.getElementsByClassName('game__board')[0];
+    board.scrollTo(board.clientWidth/3, board.clientHeight/3);
   }
 
   render() {
