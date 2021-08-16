@@ -1,44 +1,8 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+
+import { Board } from './Board';
 import './index.scss';
-
-function Cell(props: any) {
-  return (
-    <div
-      className={`cell ${props.value ? "cell--alive" : "cell-dead"}`}
-      onClick={props.onClick}>
-    </div>
-  )
-};
-
-interface BoardProps {
-  cells: Array<boolean[]>,
-  onClick: Function
-}
-
-class Board extends React.Component<BoardProps, {}> {
-
-  renderCell(x: number, y: number) {
-    return (
-      <Cell
-        value={this.props.cells[x][y]}
-        onClick={() => this.props.onClick(x, y)}
-        key={y}
-      />
-    );
-  }
-
-  render() {
-    return (
-      this.props.cells.map((row, rowIndex) =>
-        <div className="board-row" key={rowIndex}>
-          {row.map((cell, cellIndex) => this.renderCell(rowIndex, cellIndex))}
-        </div>
-      )
-    );
-  }
-}
-
 interface GameState {
   cells: Array<boolean[]>,
   paused: boolean,
