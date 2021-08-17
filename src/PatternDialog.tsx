@@ -1,15 +1,29 @@
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
 
 export { PatternDialog }
 
-export interface PatternDialogProps {
+const styles = (theme: Theme) =>
+  createStyles({
+    closeButton: {
+      position: 'absolute',
+      right: theme.spacing(1),
+      top: theme.spacing(1),
+      color: theme.palette.grey[500],
+    },
+  });
+
+
+export interface PatternDialogProps extends WithStyles<typeof styles> {
   openPatternDialog: boolean;
   onClose: (value: {name: string, period: number | null, cells: Array<number[]>} | null) => void;
 }
 
-function PatternDialog(props: PatternDialogProps) {
-  const { onClose, openPatternDialog } = props;
+const PatternDialog = withStyles(styles)((props: PatternDialogProps)  =>{
+  const { onClose, openPatternDialog, classes } = props;
 
   const patterns = {
     oscillators: {
@@ -114,11 +128,11 @@ function PatternDialog(props: PatternDialogProps) {
   }
 
   const oscillators = Object.entries(patterns.oscillators).map(([key, pattern]) => {
-    return <div onClick={() => handlePatternClick(pattern)} key={pattern.name}>{ pattern.name }</div>;
+    return <div className="body__pattern" onClick={() => handlePatternClick(pattern)} key={pattern.name}>{ pattern.name }</div>;
   });
 
   const spaceships = Object.entries(patterns.spaceships).map(([key, pattern]) => {
-    return <div onClick={() => handlePatternClick(pattern)} key={pattern.name}>{ pattern.name }</div>;
+    return <div className="body__pattern" onClick={() => handlePatternClick(pattern)} key={pattern.name}>{ pattern.name }</div>;
   });
 
   const handleClose = () => {
@@ -132,7 +146,13 @@ function PatternDialog(props: PatternDialogProps) {
 
   return (
     <Dialog onClose={handleClose} aria-labelledby="pattern-dialog-title" open={openPatternDialog}>
-      <DialogTitle id="pattern-dialog-title">Pattern Library</DialogTitle>
+
+      <DialogTitle id="pattern-dialog-title">
+        Pattern Library
+        <IconButton className={classes.closeButton} aria-label="close" onClick={handleClose}>
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
       <div className="pattern-library">
         <div className="pattern-library__column">
             <div className="column__header">
@@ -153,4 +173,4 @@ function PatternDialog(props: PatternDialogProps) {
       </div>
     </Dialog>
   );
-}
+})

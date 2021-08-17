@@ -1,6 +1,8 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import Button from '@material-ui/core/Button';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import PauseIcon from '@material-ui/icons/Pause';
 
 import { Board } from './Board';
 import { PatternDialog } from './PatternDialog';
@@ -35,7 +37,13 @@ class Game extends React.Component<{}, GameState> {
   };
 
   handleClose = (value: {name: string, period: number | null, cells: Array<number[]>} | null): void => {
-    if (!value) { return; }
+    if (!value) { 
+      this.setState({
+        openPatternDialog: false
+      });
+      return;
+    }
+
     let newBoard = this.getEmptyBoard();
     for (let cell of value.cells) {
       newBoard[cell[0]][cell[1]] = true;
@@ -159,13 +167,38 @@ class Game extends React.Component<{}, GameState> {
           />
         </div>
         <div className="game__info">
-          <Button variant="contained" color="primary" onClick={() => this.toggleStartStop()}>{this.state.paused ? "Start" : "Stop"}</Button>
-          <div>{this.state.generations}</div>
-          <Button variant="contained" color="primary" onClick={() => this.clearBoard()}>Clear</Button>
-          <Button variant="outlined" color="primary" onClick={this.handleClickOpen}>
+          <div>Generations: {this.state.generations}</div>
+
+          <div className="info__controls">
+            <Button
+              className="controls__clear"
+              variant="contained"
+              onClick={() => this.clearBoard()}
+            >
+                Clear
+            </Button>
+
+            <Button
+              variant="contained"
+              color={this.state.paused ? "primary" : "secondary"}
+              onClick={() => this.toggleStartStop()}
+              startIcon={this.state.paused ? <PlayArrowIcon /> : <PauseIcon />} 
+            >
+                {this.state.paused ? "Start" : "Pause"}
+            </Button>
+          </div>
+
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={this.handleClickOpen}
+          >
             Patterns
           </Button>
-          <PatternDialog openPatternDialog={this.state.openPatternDialog} onClose={this.handleClose} />
+          <PatternDialog
+            openPatternDialog={this.state.openPatternDialog}
+            onClose={this.handleClose}
+          />
         </div>
       </div>
     )
