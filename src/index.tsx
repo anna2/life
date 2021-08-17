@@ -3,12 +3,15 @@ import * as ReactDOM from 'react-dom';
 import Button from '@material-ui/core/Button';
 
 import { Board } from './Board';
+import { PatternDialog } from './PatternDialog';
 import './index.scss';
+
 interface GameState {
   cells: Array<boolean[]>,
   paused: boolean,
   generations: number,
-  intervalRef: number | undefined
+  intervalRef: number | undefined,
+  openPatternDialog: boolean
 }
 
 class Game extends React.Component<{}, GameState> {
@@ -22,9 +25,28 @@ class Game extends React.Component<{}, GameState> {
                         .map((e) => false)),
       paused: true,
       generations: 0,
-      intervalRef: undefined
+      intervalRef: undefined,
+      openPatternDialog: false
     };
   }
+
+  handleClickOpen = () => {
+    this.setState({openPatternDialog: true});
+  };
+
+  handleClose = (value: {name: string, period: number | null, cells: Array<number[]>} | null): void => {
+    if (!value) { return; }
+    let newBoard = this.getEmptyBoard();
+    for (let cell of value.cells) {
+      newBoard[cell[0]][cell[1]] = true;
+    }
+    this.setState({
+      openPatternDialog: false,
+      cells: newBoard,
+      generations: 0
+    });
+  };
+
 
   toggleStartStop() {
     this.setState({
@@ -107,14 +129,17 @@ class Game extends React.Component<{}, GameState> {
     });
   }
 
+  getEmptyBoard(): Array<boolean[]> {
+    return Array(100)
+            .fill(null)
+            .map(e => Array(100)
+                      .fill(null)
+                      .map((e) => false));
+  }
+
   clearBoard(): void {
-    const emptyBoard = Array(100)
-                        .fill(null)
-                        .map(e => Array(100)
-                                  .fill(null)
-                                  .map((e) => false));
     this.setState({
-      cells: emptyBoard,
+      cells: this.getEmptyBoard(),
       generations: 0
     });
   }
@@ -135,8 +160,12 @@ class Game extends React.Component<{}, GameState> {
         </div>
         <div className="game__info">
           <Button variant="contained" color="primary" onClick={() => this.toggleStartStop()}>{this.state.paused ? "Start" : "Stop"}</Button>
-          <Button variant="contained" color="primary" onClick={() => this.clearBoard()}>Clear</Button>
           <div>{this.state.generations}</div>
+          <Button variant="contained" color="primary" onClick={() => this.clearBoard()}>Clear</Button>
+          <Button variant="outlined" color="primary" onClick={this.handleClickOpen}>
+            Patterns
+          </Button>
+          <PatternDialog openPatternDialog={this.state.openPatternDialog} onClose={this.handleClose} />
         </div>
       </div>
     )

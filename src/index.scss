@@ -20,12 +20,24 @@
 }
 
 .cell {
-  border: .5px solid rgb(163, 163, 163);
+  border: 1px solid #a3a3a347;
   height: 16px;
   flex-basis: 16px;
   flex-grow: 0;
   flex-shrink: 0;
   &--alive {
     background-color: black;
+  }
+}
+
+.pattern-library {
+  display: flex;
+  justify-content: space-between;
+  margin: 2rem;
+}
+
+.column {
+  &__header {
+    font-weight: bold;
   }
 }
