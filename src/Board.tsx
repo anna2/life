@@ -6,7 +6,8 @@ export { Board }
 
 interface BoardProps {
   cells: Array<boolean[]>,
-  onClick: Function
+  onClick: Function,
+  color: string
 }
 
 class Board extends React.Component<BoardProps, {}> {
@@ -17,6 +18,7 @@ class Board extends React.Component<BoardProps, {}> {
         value={this.props.cells[x][y]}
         onClick={() => this.props.onClick(x, y)}
         key={y}
+        color={this.props.color}
       />
     );
   }

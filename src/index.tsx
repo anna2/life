@@ -4,7 +4,9 @@ import Button from '@material-ui/core/Button';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
 
+
 import { Board } from './Board';
+import { ColorPicker } from './ColorPicker';
 import { PatternDialog } from './PatternDialog';
 import './index.scss';
 
@@ -13,7 +15,8 @@ interface GameState {
   paused: boolean,
   generations: number,
   intervalRef: number | undefined,
-  openPatternDialog: boolean
+  openPatternDialog: boolean,
+  color: string
 }
 
 class Game extends React.Component<{}, GameState> {
@@ -28,7 +31,8 @@ class Game extends React.Component<{}, GameState> {
       paused: true,
       generations: 0,
       intervalRef: undefined,
-      openPatternDialog: false
+      openPatternDialog: false,
+      color: 'black'
     };
   }
 
@@ -157,6 +161,12 @@ class Game extends React.Component<{}, GameState> {
     board.scrollTo(board.clientWidth/3, board.clientHeight/3);
   }
 
+  chooseColor(color: any): void {
+    this.setState({
+      color: color
+    })
+  }
+
   render() {
     return (
       <div className="game">
@@ -164,6 +174,7 @@ class Game extends React.Component<{}, GameState> {
           <Board
             cells={this.state.cells}
             onClick={(x: number, y: number) => this.handleClick(x, y)}
+            color={this.state.color}
           />
         </div>
         <div className="game__info">
@@ -188,17 +199,23 @@ class Game extends React.Component<{}, GameState> {
             </Button>
           </div>
 
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={this.handleClickOpen}
-          >
-            Patterns
-          </Button>
-          <PatternDialog
-            openPatternDialog={this.state.openPatternDialog}
-            onClose={this.handleClose}
-          />
+          <div className="info__extras">
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={this.handleClickOpen}
+            >
+              Patterns
+            </Button>
+            <PatternDialog
+              openPatternDialog={this.state.openPatternDialog}
+              onClose={this.handleClose}
+            />
+
+            <ColorPicker onClick={(color: string) => this.chooseColor(color)}/>
+
+            
+          </div>
         </div>
       </div>
     )
