@@ -61,9 +61,9 @@ class Game extends React.Component<{}, GameState> {
 
 
   toggleStartStop() {
-    this.setState({
-      paused: !this.state.paused
-    },
+    this.setState((state) => ({
+      paused: !state.paused
+    }),
     () => {
       if (this.state.paused) {
         clearInterval(this.state.intervalRef)
@@ -74,20 +74,20 @@ class Game extends React.Component<{}, GameState> {
   }
 
   tick = () => {
-    this.setState({
-      cells: this.getNewCellState(),
-      generations: this.state.generations + 1
-    });
+    this.setState((state) => ({
+      cells: this.getNewCellState(state.cells),
+      generations: state.generations + 1
+    }));
   }
 
-  getNewCellState() {
-    let result = JSON.parse(JSON.stringify(this.state.cells));
+  getNewCellState(cells: Array<boolean[]>) {
+    let result = JSON.parse(JSON.stringify(cells));
 
-    for (let row = 0; row < this.state.cells.length; row++) {
-      for (let cell = 0; cell < this.state.cells[row].length; cell++) {
+    for (let row = 0; row < cells.length; row++) {
+      for (let cell = 0; cell < cells[row].length; cell++) {
         let numLiveNeighbors = this.countLiveNeighbors(row, cell);
 
-        if (this.state.cells[row][cell]) {
+        if (cells[row][cell]) {
           if (numLiveNeighbors <= 1 || numLiveNeighbors >= 4) { result[row][cell] = false; } //death
         } else {
           if (numLiveNeighbors === 3) { result[row][cell] = true; } //birth
