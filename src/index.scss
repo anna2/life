@@ -26,9 +26,9 @@
   flex-shrink: 0;
 }
 
-.controls {
-  &__clear {
-    margin-right: 1rem !important;
+.info__controls {
+  button:not(:last-of-type) {
+    margin-right: 1rem;
   }
 }
 

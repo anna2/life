@@ -1,8 +1,10 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import Button from '@material-ui/core/Button';
+import ClearIcon from '@material-ui/icons/Clear';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
+import RedoIcon from '@material-ui/icons/Redo';
 
 
 import { Board } from './Board';
@@ -185,6 +187,7 @@ class Game extends React.Component<{}, GameState> {
               className="controls__clear"
               variant="contained"
               onClick={() => this.clearBoard()}
+              startIcon={<ClearIcon />} 
             >
                 Clear
             </Button>
@@ -196,6 +199,14 @@ class Game extends React.Component<{}, GameState> {
               startIcon={this.state.paused ? <PlayArrowIcon /> : <PauseIcon />} 
             >
                 {this.state.paused ? "Start" : "Pause"}
+            </Button>
+
+            <Button
+              variant="contained"
+              onClick={this.tick}
+              startIcon={<RedoIcon />} 
+            >
+              Step
             </Button>
           </div>
 
